@@ -11,9 +11,10 @@ import GameplayKit
 import AVFoundation
 
 class GameViewController: UIViewController {
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        configureAudioSession()
         
         // Load 'GameScene.sks' as a GKScene. This provides gameplay related content
         // including entities and graphs.
@@ -44,7 +45,7 @@ class GameViewController: UIViewController {
             }
         }
     }
-
+    
     override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
         if UIDevice.current.userInterfaceIdiom == .phone {
             return .allButUpsideDown
@@ -52,21 +53,21 @@ class GameViewController: UIViewController {
             return .all
         }
     }
-
+    
     override var prefersStatusBarHidden: Bool {
         return true
     }
     
     func applicationDidBecomeActive(_ application: UIApplication) {
-            // Configure audio session
-            configureAudioSession()
+        // Configure audio session
+        configureAudioSession()
     }
     private func configureAudioSession() {
-            do {
-                try AVAudioSession.sharedInstance().setCategory(.ambient)
-                try AVAudioSession.sharedInstance().setActive(true)
-            } catch {
-                print("Failed to set audio session category. Error: \(error)")
+        do {
+            try AVAudioSession.sharedInstance().setCategory(.ambient, mode: .default)
+            try AVAudioSession.sharedInstance().setActive(true)
+        } catch {
+            print("Failed to set audio session category. Error: \(error)")
         }
     }
 }

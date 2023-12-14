@@ -30,7 +30,7 @@ class GameScene: SKScene {
     
     override func didMove(to view: SKView) {
         playBackgroundMusic("background_music.mp3")
-        player = childNode(withName: "player") as? Player
+        self.player = self.childNode(withName: "//player") as? Player
         
         setupPlayerPhysics()
         spawnPokemons()
@@ -71,7 +71,6 @@ class GameScene: SKScene {
     }
     
     func setupPlayerPhysics() {
-        player?.physicsBody = SKPhysicsBody(rectangleOf: player?.size ?? CGSize.zero)
         player?.physicsBody?.velocity = CGVector(dx: 0, dy: 0)
         player?.physicsBody = SKPhysicsBody(rectangleOf: player?.size ?? CGSize.zero)
         player?.physicsBody?.categoryBitMask = PhysicsCategory.Player
