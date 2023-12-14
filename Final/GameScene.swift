@@ -7,6 +7,7 @@
 
 import SpriteKit
 import GameplayKit
+import AVFoundation
 
 class GameScene: SKScene {
     
@@ -22,10 +23,28 @@ class GameScene: SKScene {
         self.lastUpdateTime = 0
     }
     
+    override func didMove(to view: SKView) {
+        playBackgroundMusic("background_music.mp3")
+    }
+    func playBackgroundMusic(_ filename: String) {
+            let backgroundMusic = SKAudioNode(fileNamed: filename)
+            backgroundMusic.autoplayLooped = true
+            addChild(backgroundMusic)
+        }
+    
+    func playCaptureSound() {
+        let playSound = SKAction.playSoundFileNamed("capture_sound.mp3", waitForCompletion: false)
+        self.run(playSound)
+    }
+
+    
     
     func touchDown(atPoint pos : CGPoint) {
 
     }
+    
+    
+    
     
     func touchMoved(toPoint pos : CGPoint) {
         if let n = self.spinnyNode?.copy() as! SKShapeNode? {
