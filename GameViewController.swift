@@ -31,7 +31,7 @@ class GameViewController: UIViewController {
                 
                 // Present the scene
                 if let view = self.view as! SKView? {
-                    view.showsPhysics = true // Add this line to enable physics body debugging
+                    view.showsPhysics = false // Add this line to enable physics body debugging
                     view.presentScene(sceneNode)
                     
                     view.presentScene(sceneNode)
