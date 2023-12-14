@@ -21,7 +21,6 @@ class Player: SKSpriteNode{
     
     func move(_ direction: Direction){
         print("Move player: \(direction.rawValue)")
-            
             switch direction{
             case .up:
                 self.texture? = SKTexture(imageNamed: "player_up")

@@ -17,7 +17,8 @@ class GameScene: SKScene {
     private var player: Player?
     
     override func sceneDidLoad() {
-        self.lastUpdateTime = 0
+        super.sceneDidLoad()
+        physicsWorld.gravity = CGVector(dx: 0, dy: 0) // Adjust as needed
         physicsWorld.contactDelegate = self
     }
     
@@ -31,6 +32,7 @@ class GameScene: SKScene {
 
     func setupPlayerPhysics() {
         player?.physicsBody = SKPhysicsBody(rectangleOf: player?.size ?? CGSize.zero)
+        player?.physicsBody?.velocity = CGVector(dx: 0, dy: 0)
         player?.physicsBody?.categoryBitMask = PhysicsCategory.Player
         player?.physicsBody?.contactTestBitMask = PhysicsCategory.Pokemon
         player?.physicsBody?.collisionBitMask = PhysicsCategory.None
@@ -77,7 +79,7 @@ class GameScene: SKScene {
     }
 
     override func update(_ currentTime: TimeInterval) {
-        // Called before each frame is rendered
+        player?.physicsBody?.velocity = CGVector(dx: 0, dy: 0) // Called before each frame is rendered
         if (self.lastUpdateTime == 0) {
             self.lastUpdateTime = currentTime
         }
