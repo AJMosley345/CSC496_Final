@@ -20,11 +20,11 @@ class GameScene: SKScene {
     private var player: Player?
     
     override func sceneDidLoad() {
-        
-        self.lastUpdateTime = 0
+        super.sceneDidLoad()
+        physicsWorld.gravity = CGVector(dx: 0, dy: 0) // Adjust as needed
         physicsWorld.contactDelegate = self
-        
     }
+
     
     override func didMove(to view: SKView) {
         playBackgroundMusic("background_music.mp3")
@@ -46,6 +46,8 @@ class GameScene: SKScene {
     }
     
     func setupPlayerPhysics() {
+        player?.physicsBody = SKPhysicsBody(rectangleOf: player?.size ?? CGSize.zero)
+        player?.physicsBody?.velocity = CGVector(dx: 0, dy: 0)
         player?.physicsBody = SKPhysicsBody(rectangleOf: player?.size ?? CGSize.zero)
         player?.physicsBody?.categoryBitMask = PhysicsCategory.Player
         player?.physicsBody?.contactTestBitMask = PhysicsCategory.Pokemon
