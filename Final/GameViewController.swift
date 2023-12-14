@@ -8,6 +8,7 @@
 import UIKit
 import SpriteKit
 import GameplayKit
+import AVFoundation
 
 class GameViewController: UIViewController {
 
@@ -51,5 +52,18 @@ class GameViewController: UIViewController {
 
     override var prefersStatusBarHidden: Bool {
         return true
+    }
+    
+    func applicationDidBecomeActive(_ application: UIApplication) {
+            // Configure audio session
+            configureAudioSession()
+    }
+    private func configureAudioSession() {
+            do {
+                try AVAudioSession.sharedInstance().setCategory(.ambient)
+                try AVAudioSession.sharedInstance().setActive(true)
+            } catch {
+                print("Failed to set audio session category. Error: \(error)")
+        }
     }
 }

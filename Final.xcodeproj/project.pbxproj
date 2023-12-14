@@ -62,11 +62,11 @@
 				217526272B18F691007838D0 /* AppDelegate.swift */,
 				217526292B18F691007838D0 /* GameScene.sks */,
 				2175262D2B18F691007838D0 /* GameScene.swift */,
+				68B4A0C42B2B676C00244C19 /* Player.swift */,
 				2175262F2B18F691007838D0 /* GameViewController.swift */,
 				217526312B18F691007838D0 /* Main.storyboard */,
 				217526342B18F693007838D0 /* Assets.xcassets */,
 				217526362B18F693007838D0 /* LaunchScreen.storyboard */,
-				68B4A0C42B2B676C00244C19 /* Player.swift */,
 			);
 			path = Final;
 			sourceTree = "<group>";
