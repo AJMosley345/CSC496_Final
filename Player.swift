@@ -18,9 +18,8 @@ enum Direction: String {
 
 
 class Player: SKSpriteNode{
-    var canMove = true
+    
     func move(_ direction: Direction){
-        guard canMove else { return }
         print("Move player: \(direction.rawValue)")
             
             switch direction{
@@ -38,9 +37,6 @@ class Player: SKSpriteNode{
                 stop()
             }
         }
-    func makeMovable() {
-            self.canMove = true
-    }
         
         func stop(){
             self.physicsBody?.velocity = CGVector(dx: 0, dy: 0)

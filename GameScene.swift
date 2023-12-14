@@ -11,81 +11,38 @@ import AVFoundation
 
 class GameScene: SKScene {
     
-    private var backgroundMusic: SKAudioNode?
-    
     var entities = [GKEntity]()
     var graphs = [String : GKGraph]()
-    
     private var lastUpdateTime : TimeInterval = 0
-    private var label : SKLabelNode?
-    private var spinnyNode : SKShapeNode?
     private var player: Player?
     
     override func sceneDidLoad() {
-        super.sceneDidLoad()
-        physicsWorld.gravity = CGVector(dx: 0, dy: 0) // Adjust as needed
+        self.lastUpdateTime = 0
         physicsWorld.contactDelegate = self
     }
-
     
     override func didMove(to view: SKView) {
         playBackgroundMusic("background_music.mp3")
-        self.player = self.childNode(withName: "//player") as? Player
+        player = childNode(withName: "player") as? Player
         
         setupPlayerPhysics()
         spawnPokemons()
-        
-    }
-    func playBackgroundMusic(_ filename: String) {
-        if let music = SKAudioNode(fileNamed: filename) {
-            backgroundMusic = music
-            backgroundMusic?.autoplayLooped = true
-            addChild(backgroundMusic!)
-        } else {
-            print("Could not load background music file.")
-        }
     }
 
-    
-    func playCaptureSound() {
-        // Stop the background music
-        backgroundMusic?.run(SKAction.stop())
-        
-        // Play capture sound
-        let playSound = SKAction.playSoundFileNamed("capture_sound.mp3", waitForCompletion: true)
-        
-        // Create an action sequence to play sound and then start background music again
-        let sequence = SKAction.sequence([
-                playSound,
-                SKAction.run { [weak self] in
-                    // Resume background music
-                    self?.backgroundMusic?.run(SKAction.play())
-                },
-                SKAction.run { [weak self] in
-                    // Allow the player to move again
-                    self?.player?.makeMovable()
-                }
-        ])
-            
-            self.run(sequence)
-    }
-    
     func setupPlayerPhysics() {
-        player?.physicsBody?.velocity = CGVector(dx: 0, dy: 0)
         player?.physicsBody = SKPhysicsBody(rectangleOf: player?.size ?? CGSize.zero)
         player?.physicsBody?.categoryBitMask = PhysicsCategory.Player
         player?.physicsBody?.contactTestBitMask = PhysicsCategory.Pokemon
         player?.physicsBody?.collisionBitMask = PhysicsCategory.None
         player?.physicsBody?.isDynamic = true
     }
-    
+
     func spawnPokemons() {
-        let numberOfPokemonsToSpawn = 2 // Adjust this to spawn more or fewer Pokémon
-        for _ in 1...numberOfPokemonsToSpawn {
+        for _ in 1...3 {  // Adjust the number of Pokémons to spawn
             spawnPokemon()
         }
     }
-    
+
     func spawnPokemon() {
         let pokemonNumber = Int.random(in: 1...151)
         let pokemonNode = SKSpriteNode(imageNamed: "\(pokemonNumber)")
@@ -101,89 +58,43 @@ class GameScene: SKScene {
 
         addChild(pokemonNode)
     }
+    
+    func playBackgroundMusic(_ filename: String) {
+        let backgroundMusic = SKAudioNode(fileNamed: filename)
+        backgroundMusic.autoplayLooped = true
+        addChild(backgroundMusic)
+    }
 
-    
-    
-    struct PhysicsCategory {
-        static let None: UInt32 = 0
-        static let Player: UInt32 = 0b1
-        static let Pokemon: UInt32 = 0b10
+    func playCaptureSound() {
+        let playSound = SKAction.playSoundFileNamed("capture_sound.mp3", waitForCompletion: false)
+        self.run(playSound)
     }
-    
-    
-    func touchDown(atPoint pos : CGPoint) {
-        print("touch down")
-        let nodeAtPoint = atPoint(pos)
-        if let touchedNode = nodeAtPoint as? SKSpriteNode{
-            if touchedNode.name?.starts(with: "controller_") == true{
-                let direction = touchedNode.name?.replacingOccurrences(of: "controller_", with: "")
-                player?.move(Direction(rawValue: direction ?? "stop")!)
-            }
-        }
-    }
-    
-    
-    func touchMoved(toPoint pos : CGPoint) {
-        if let n = self.spinnyNode?.copy() as! SKShapeNode? {
-            n.position = pos
-            n.strokeColor = SKColor.blue
-            self.addChild(n)
-        }
-    }
-    
-    func touchUp(atPoint pos : CGPoint) {
-        if let n = self.spinnyNode?.copy() as! SKShapeNode? {
-            n.position = pos
-            n.strokeColor = SKColor.red
-            self.addChild(n)
-        }
-    }
-    
+
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        if let label = self.label {
-            label.run(SKAction.init(named: "Pulse")!, withKey: "fadeInOut")
-        }
-        
-        for t in touches { self.touchDown(atPoint: t.location(in: self)) }
+        guard let touch = touches.first else { return }
+        _ = touch.location(in: self)
+        // Implement touch logic (if needed)
     }
-    
-    override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
-        for t in touches { self.touchMoved(toPoint: t.location(in: self)) }
-    }
-    
-    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
-        for t in touches { self.touchUp(atPoint: t.location(in: self)) }
-    }
-    
-    override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
-        for t in touches { self.touchUp(atPoint: t.location(in: self)) }
-    }
-    
-    
+
     override func update(_ currentTime: TimeInterval) {
         // Called before each frame is rendered
-        
-        // Initialize _lastUpdateTime if it has not already been
         if (self.lastUpdateTime == 0) {
             self.lastUpdateTime = currentTime
         }
-        
-        // Calculate time since last update
+
         let dt = currentTime - self.lastUpdateTime
-        
-        // Update entities
+
         for entity in self.entities {
             entity.update(deltaTime: dt)
         }
-        
-        // Check distance between each Pokémon and the player
+
         enumerateChildNodes(withName: "pokemon") { node, _ in
             guard let pokemonNode = node as? SKSpriteNode, let player = self.player else { return }
             
             let distance = hypot(pokemonNode.position.x - player.position.x,
                                  pokemonNode.position.y - player.position.y)
             
-            let visibilityThreshold: CGFloat = 100  // Adjust this value as needed
+            let visibilityThreshold: CGFloat = 100
             if distance < visibilityThreshold {
                 pokemonNode.alpha = 1  // Make Pokémon visible
             } else {
@@ -200,7 +111,6 @@ extension GameScene: SKPhysicsContactDelegate {
         var firstBody: SKPhysicsBody
         var secondBody: SKPhysicsBody
 
-        // Determine which body is the player and which is the Pokémon
         if contact.bodyA.categoryBitMask < contact.bodyB.categoryBitMask {
             firstBody = contact.bodyA
             secondBody = contact.bodyB
@@ -209,20 +119,18 @@ extension GameScene: SKPhysicsContactDelegate {
             secondBody = contact.bodyA
         }
 
-        // Check if the contact is between the player and a Pokémon
         if firstBody.categoryBitMask == PhysicsCategory.Player && secondBody.categoryBitMask == PhysicsCategory.Pokemon {
             if let pokemonNode = secondBody.node as? SKSpriteNode {
-                // Here, handle the logic when a player contacts a Pokémon
                 print("Player has encountered a Pokémon!")
-                
-                player?.canMove = false
-
                 playCaptureSound()
-
-                // Example: remove the Pokémon from the scene
                 pokemonNode.removeFromParent()
             }
         }
     }
 }
 
+struct PhysicsCategory {
+    static let None: UInt32 = 0
+    static let Player: UInt32 = 0b1
+    static let Pokemon: UInt32 = 0b10
+}
