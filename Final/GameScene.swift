@@ -17,14 +17,18 @@ class GameScene: SKScene {
     private var lastUpdateTime : TimeInterval = 0
     private var label : SKLabelNode?
     private var spinnyNode : SKShapeNode?
+    private var player: Player?
     
     override func sceneDidLoad() {
 
         self.lastUpdateTime = 0
+        physicsWorld.contactDelegate = self
+
     }
     
     override func didMove(to view: SKView) {
         playBackgroundMusic("background_music.mp3")
+        player = childNode(withName: "player") as? Player
     }
     func playBackgroundMusic(_ filename: String) {
             let backgroundMusic = SKAudioNode(fileNamed: filename)
@@ -40,7 +44,14 @@ class GameScene: SKScene {
     
     
     func touchDown(atPoint pos : CGPoint) {
-
+        print("touch down")
+        let nodeAtPoint = atPoint(pos)
+        if let touchedNode = nodeAtPoint as? SKSpriteNode{
+            if touchedNode.name?.starts(with: "controller_") == true{
+                let direction = touchedNode.name?.replacingOccurrences(of: "controller_", with: "")
+                player?.move(Direction(rawValue: direction ?? "stop")!)
+            }
+        }
     }
     
     
@@ -100,5 +111,18 @@ class GameScene: SKScene {
         }
         
         self.lastUpdateTime = currentTime
+    }
+}
+
+extension GameScene:SKPhysicsContactDelegate{
+    func didBegin(_ contact: SKPhysicsContact) {
+        let firstNode = contact.bodyA.node as? SKSpriteNode
+        let secondNode = contact.bodyB.node as? SKSpriteNode
+        
+        if let firstNode = firstNode, let secondNode = secondNode {
+            if (firstNode.name == "player" && secondNode.name == "pokemon") || (firstNode.name == "pokemon" && secondNode.name == "player") {
+                print("player touched pokemon")
+            }
+        }
     }
 }
