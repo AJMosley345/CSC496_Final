@@ -11,6 +11,8 @@ import AVFoundation
 
 class GameScene: SKScene {
     
+    private var backgroundMusic: SKAudioNode?
+    
     var entities = [GKEntity]()
     var graphs = [String : GKGraph]()
     
@@ -35,14 +37,37 @@ class GameScene: SKScene {
         
     }
     func playBackgroundMusic(_ filename: String) {
-        let backgroundMusic = SKAudioNode(fileNamed: filename)
-        backgroundMusic.autoplayLooped = true
-        addChild(backgroundMusic)
+        if let music = SKAudioNode(fileNamed: filename) {
+            backgroundMusic = music
+            backgroundMusic?.autoplayLooped = true
+            addChild(backgroundMusic!)
+        } else {
+            print("Could not load background music file.")
+        }
     }
+
     
     func playCaptureSound() {
-        let playSound = SKAction.playSoundFileNamed("capture_sound.mp3", waitForCompletion: false)
-        self.run(playSound)
+        // Stop the background music
+        backgroundMusic?.run(SKAction.stop())
+        
+        // Play capture sound
+        let playSound = SKAction.playSoundFileNamed("capture_sound.mp3", waitForCompletion: true)
+        
+        // Create an action sequence to play sound and then start background music again
+        let sequence = SKAction.sequence([
+                playSound,
+                SKAction.run { [weak self] in
+                    // Resume background music
+                    self?.backgroundMusic?.run(SKAction.play())
+                },
+                SKAction.run { [weak self] in
+                    // Allow the player to move again
+                    self?.player?.makeMovable()
+                }
+        ])
+            
+            self.run(sequence)
     }
     
     func setupPlayerPhysics() {
@@ -56,7 +81,7 @@ class GameScene: SKScene {
     }
     
     func spawnPokemons() {
-        let numberOfPokemonsToSpawn = 10 // Adjust this to spawn more or fewer Pokémon
+        let numberOfPokemonsToSpawn = 2 // Adjust this to spawn more or fewer Pokémon
         for _ in 1...numberOfPokemonsToSpawn {
             spawnPokemon()
         }
@@ -190,6 +215,9 @@ extension GameScene: SKPhysicsContactDelegate {
             if let pokemonNode = secondBody.node as? SKSpriteNode {
                 // Here, handle the logic when a player contacts a Pokémon
                 print("Player has encountered a Pokémon!")
+                
+                player?.canMove = false
+
                 playCaptureSound()
 
                 // Example: remove the Pokémon from the scene
