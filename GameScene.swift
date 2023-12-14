@@ -32,6 +32,7 @@ class GameScene: SKScene {
         
         setupPlayerPhysics()
         spawnPokemons()
+        
     }
     func playBackgroundMusic(_ filename: String) {
         let backgroundMusic = SKAudioNode(fileNamed: filename)
@@ -53,7 +54,8 @@ class GameScene: SKScene {
     }
     
     func spawnPokemons() {
-        for _ in 1...10 {  // Example: Spawn 10 Pokémons, adjust the number as needed
+        let numberOfPokemonsToSpawn = 10 // Adjust this to spawn more or fewer Pokémon
+        for _ in 1...numberOfPokemonsToSpawn {
             spawnPokemon()
         }
     }
@@ -69,12 +71,11 @@ class GameScene: SKScene {
         pokemonNode.physicsBody?.contactTestBitMask = PhysicsCategory.Player
         pokemonNode.physicsBody?.collisionBitMask = PhysicsCategory.None
         pokemonNode.physicsBody?.isDynamic = false
-        addChild(pokemonNode)
-        
         pokemonNode.alpha = 0  // Make Pokémon initially invisible
+
         addChild(pokemonNode)
-        
     }
+
     
     
     struct PhysicsCategory {
