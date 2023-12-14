@@ -40,7 +40,7 @@ class GameScene: SKScene {
     }
 
     func spawnPokemons() {
-        for _ in 1...3 {  // Adjust the number of Pokémons to spawn
+        for _ in 1...3 {
             spawnPokemon()
         }
     }
@@ -73,39 +73,47 @@ class GameScene: SKScene {
     }
 
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        guard let touch = touches.first else { return }
-        _ = touch.location(in: self)
-        // Implement touch logic (if needed)
+        for t in touches { self.touchDown(atPoint: t.location(in: self)) }
     }
 
-    override func update(_ currentTime: TimeInterval) {
-        player?.physicsBody?.velocity = CGVector(dx: 0, dy: 0) // Called before each frame is rendered
-        if (self.lastUpdateTime == 0) {
-            self.lastUpdateTime = currentTime
-        }
+    override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
+        // Intentionally empty if you do not wish to change direction on move
+    }
 
-        let dt = currentTime - self.lastUpdateTime
+    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+        
+    }
 
-        for entity in self.entities {
-            entity.update(deltaTime: dt)
-        }
-
-        enumerateChildNodes(withName: "pokemon") { node, _ in
-            guard let pokemonNode = node as? SKSpriteNode, let player = self.player else { return }
-            
-            let distance = hypot(pokemonNode.position.x - player.position.x,
-                                 pokemonNode.position.y - player.position.y)
-            
-            let visibilityThreshold: CGFloat = 100
-            if distance < visibilityThreshold {
-                pokemonNode.alpha = 1  // Make Pokémon visible
-            } else {
-                pokemonNode.alpha = 0  // Keep Pokémon invisible
+    func touchDown(atPoint pos: CGPoint) {
+        let nodesAtPoint = nodes(at: pos)
+        for node in nodesAtPoint {
+            if let nodeName = node.name, nodeName.starts(with: "controller_") {
+                let directionString = nodeName.replacingOccurrences(of: "controller_", with: "")
+                if let direction = Direction(rawValue: directionString) {
+                    player?.move(direction)
+                }
             }
         }
-        
-        self.lastUpdateTime = currentTime
     }
+
+    func touchUp(atPoint pos: CGPoint) {
+        player?.stop()
+    }
+        
+
+    override func update(_ currentTime: TimeInterval) {
+            // Called before each frame is rendered
+            if self.lastUpdateTime == 0 {
+                self.lastUpdateTime = currentTime
+            }
+            
+            let dt = currentTime - self.lastUpdateTime
+            for entity in self.entities {
+                entity.update(deltaTime: dt)
+            }
+            
+            self.lastUpdateTime = currentTime
+        }
 }
 
 extension GameScene: SKPhysicsContactDelegate {
@@ -136,3 +144,9 @@ struct PhysicsCategory {
     static let Player: UInt32 = 0b1
     static let Pokemon: UInt32 = 0b10
 }
+
+
+
+
+// Player class and other necessary classes and extensions follow...
+

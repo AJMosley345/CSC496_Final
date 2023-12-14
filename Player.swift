@@ -17,27 +17,40 @@ enum Direction: String {
 }
 
 
-class Player: SKSpriteNode{
+class Player: SKSpriteNode {
     
-    func move(_ direction: Direction){
+    private var currentDirection: Direction = .stop
+    
+    func move(_ direction: Direction) {
+        // Only update the direction and apply movement if it's different from the current direction
+        if currentDirection != direction {
+            currentDirection = direction
+            applyMovement(direction: currentDirection)
+        }
+    }
+    
+    func stop() {
+        self.physicsBody?.velocity = CGVector(dx: 0, dy: 0)
+    }
+    
+    private func applyMovement(direction: Direction) {
         print("Move player: \(direction.rawValue)")
-            switch direction{
+
+        switch direction {
             case .up:
-                self.texture? = SKTexture(imageNamed: "player_up")
+                self.texture = SKTexture(imageNamed: "player_up")
                 self.physicsBody?.velocity = CGVector(dx: 0, dy: 100)
             case .down:
-                self.texture? = SKTexture(imageNamed: "player_down")
-                self.physicsBody?.velocity = CGVector(dx:0, dy: -100)
+                self.texture = SKTexture(imageNamed: "player_down")
+                self.physicsBody?.velocity = CGVector(dx: 0, dy: -100)
             case .left:
-                self.physicsBody?.velocity = CGVector(dx:-100, dy: 0)
+                self.texture = SKTexture(imageNamed: "player_left") // Assuming you have a left texture
+                self.physicsBody?.velocity = CGVector(dx: -100, dy: 0)
             case .right:
-                self.physicsBody?.velocity = CGVector(dx:100, dy: 0)
+                self.texture = SKTexture(imageNamed: "player_right") // Assuming you have a right texture
+                self.physicsBody?.velocity = CGVector(dx: 100, dy: 0)
             case .stop:
-                stop()
-            }
+                self.physicsBody?.velocity = CGVector.zero
         }
-        
-        func stop(){
-            self.physicsBody?.velocity = CGVector(dx: 0, dy: 0)
-        }
+    }
 }
