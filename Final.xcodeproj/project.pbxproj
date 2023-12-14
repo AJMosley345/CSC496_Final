@@ -15,6 +15,8 @@
 		217526352B18F693007838D0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 217526342B18F693007838D0 /* Assets.xcassets */; };
 		217526382B18F693007838D0 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 217526362B18F693007838D0 /* LaunchScreen.storyboard */; };
 		68B4A0C52B2B676C00244C19 /* Player.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68B4A0C42B2B676C00244C19 /* Player.swift */; };
+		68B4A0C82B2B772E00244C19 /* capture_sound.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 68B4A0C62B2B772E00244C19 /* capture_sound.mp3 */; };
+		68B4A0C92B2B772E00244C19 /* background_music.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 68B4A0C72B2B772E00244C19 /* background_music.mp3 */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -27,6 +29,8 @@
 		217526342B18F693007838D0 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		217526372B18F693007838D0 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		68B4A0C42B2B676C00244C19 /* Player.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Player.swift; sourceTree = "<group>"; };
+		68B4A0C62B2B772E00244C19 /* capture_sound.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; name = capture_sound.mp3; path = ../../Downloads/capture_sound.mp3; sourceTree = "<group>"; };
+		68B4A0C72B2B772E00244C19 /* background_music.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; name = background_music.mp3; path = ../../Downloads/background_music.mp3; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -43,6 +47,8 @@
 		2175261B2B18F691007838D0 = {
 			isa = PBXGroup;
 			children = (
+				68B4A0C72B2B772E00244C19 /* background_music.mp3 */,
+				68B4A0C62B2B772E00244C19 /* capture_sound.mp3 */,
 				217526262B18F691007838D0 /* Final */,
 				217526252B18F691007838D0 /* Products */,
 			);
@@ -129,6 +135,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				68B4A0C82B2B772E00244C19 /* capture_sound.mp3 in Resources */,
+				68B4A0C92B2B772E00244C19 /* background_music.mp3 in Resources */,
 				217526332B18F691007838D0 /* Main.storyboard in Resources */,
 				2175262A2B18F691007838D0 /* GameScene.sks in Resources */,
 				217526352B18F693007838D0 /* Assets.xcassets in Resources */,
