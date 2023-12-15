@@ -12,7 +12,8 @@ import AVFoundation
 class GameScene: SKScene {
     
     private var pokemonToSpawn = 3
-    
+    private var backgroundMusic: SKAudioNode?
+
     var entities = [GKEntity]()
     var graphs = [String : GKGraph]()
     private var lastUpdateTime : TimeInterval = 0
@@ -58,20 +59,16 @@ class GameScene: SKScene {
         let pokemonNode = SKSpriteNode(imageNamed: "\(pokemonNumber)")
         pokemonNode.name = "pokemon"
         
-        // Calculate the playable area based on the background size
-        let backgroundWidth = CGFloat(1024.731)  // Cast to CGFloat
+        let backgroundWidth = CGFloat(1024.731)
             let backgroundHeight = CGFloat(753.924)
         
-        // Offset values might be needed to account for the anchor point and sprite size
         let xOffset = backgroundWidth / 2
         let yOffset = backgroundHeight / 2
         
-        // Calculate safe spawning margins
-        let margin: CGFloat = 50 // Adjust this margin to the size of your Pokémon sprites
+        let margin: CGFloat = 50
         let xRange = (-xOffset + margin)...(xOffset - margin)
         let yRange = (-yOffset + margin)...(yOffset - margin)
         
-        // Set the position within the safe spawning margins
         pokemonNode.position = CGPoint(
             x: CGFloat.random(in: xRange),
             y: CGFloat.random(in: yRange)
@@ -83,7 +80,7 @@ class GameScene: SKScene {
         pokemonNode.physicsBody?.contactTestBitMask = PhysicsCategory.Player
         pokemonNode.physicsBody?.collisionBitMask = PhysicsCategory.None
         pokemonNode.physicsBody?.isDynamic = false
-        pokemonNode.alpha = 1  // Ensure Pokémon is visible
+        pokemonNode.alpha = 1
         pokemonNode.zPosition = 1
         
         // Add the Pokémon to the scene
@@ -93,18 +90,30 @@ class GameScene: SKScene {
 
     }
 
-
-    
     
     func playBackgroundMusic(_ filename: String) {
-        let backgroundMusic = SKAudioNode(fileNamed: filename)
-        backgroundMusic.autoplayLooped = true
-        addChild(backgroundMusic)
+            let backgroundMusic = SKAudioNode(fileNamed: filename)
+            backgroundMusic.autoplayLooped = true
+            addChild(backgroundMusic)
+    }
+
+
+    
+    func stopBackgroundMusic() {
+            backgroundMusic?.run(SKAction.stop())
+    }
+
+        func resumeBackgroundMusic() {
+            backgroundMusic?.run(SKAction.play())
     }
     
     func playCaptureSound() {
-        let playSound = SKAction.playSoundFileNamed("capture_sound.mp3", waitForCompletion: false)
-        self.run(playSound)
+            stopBackgroundMusic() // Stop the background music
+            let playSound = SKAction.playSoundFileNamed("capture_sound.mp3", waitForCompletion: true)
+            run(playSound) { [weak self] in
+                // Resume background music after the capture sound has finished playing
+                self?.resumeBackgroundMusic()
+        }
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -112,11 +121,11 @@ class GameScene: SKScene {
     }
     
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
-        // Intentionally empty if you do not wish to change direction on move
+        
     }
     
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
-        // Intentionally empty to allow continuous movement
+
     }
     
     
@@ -143,13 +152,13 @@ class GameScene: SKScene {
             self.lastUpdateTime = currentTime
             // Spawn initial Pokémon
             spawnPokemonsIfNeeded()
-        }
+    }
         
         let dt = currentTime - self.lastUpdateTime
         
         for entity in self.entities {
             entity.update(deltaTime: dt)
-        }
+    }
         
         self.lastUpdateTime = currentTime
         
@@ -181,13 +190,14 @@ extension GameScene: SKPhysicsContactDelegate {
 
         if firstBody.categoryBitMask == PhysicsCategory.Player && secondBody.categoryBitMask == PhysicsCategory.Pokemon {
                     if let pokemonNode = secondBody.node as? SKSpriteNode {
+                        pokemonNode.removeFromParent()
                         playCaptureSound()
-                        pokemonNode.removeFromParent() // Remove the captured Pokémon
-                        // Don't call spawnPokemons() here since update will handle it
-                    }
-                }
+                                            
+                        
             }
         }
+    }
+}
 
 struct PhysicsCategory {
     static let None: UInt32 = 0
