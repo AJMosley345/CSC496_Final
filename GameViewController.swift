@@ -32,7 +32,7 @@ class GameViewController: UIViewController {
                 
                 // Present the scene
                 if let view = self.view as! SKView? {
-                    view.showsPhysics = true // Add this line to enable physics body debugging
+                    view.showsPhysics = false // Add this line to enable physics body debugging
                     view.presentScene(sceneNode)
                     
                     view.presentScene(sceneNode)
@@ -47,12 +47,9 @@ class GameViewController: UIViewController {
     }
     
     override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
-        if UIDevice.current.userInterfaceIdiom == .phone {
-            return .allButUpsideDown
-        } else {
-            return .all
-        }
+        return .landscape  // Support landscape left and landscape right only
     }
+
     
     override var prefersStatusBarHidden: Bool {
         return true

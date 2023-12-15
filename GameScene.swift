@@ -13,6 +13,8 @@ class GameScene: SKScene {
     
     private var pokemonToSpawn = 3
     private var backgroundMusic: SKAudioNode?
+    
+    private var capturedPokemonName: String?
 
     var entities = [GKEntity]()
     var graphs = [String : GKGraph]()
@@ -60,7 +62,7 @@ class GameScene: SKScene {
         pokemonNode.name = "pokemon"
         
         let backgroundWidth = CGFloat(1024.731)
-            let backgroundHeight = CGFloat(753.924)
+        let backgroundHeight = CGFloat(753.924)
         
         let xOffset = backgroundWidth / 2
         let yOffset = backgroundHeight / 2
@@ -80,15 +82,48 @@ class GameScene: SKScene {
         pokemonNode.physicsBody?.contactTestBitMask = PhysicsCategory.Player
         pokemonNode.physicsBody?.collisionBitMask = PhysicsCategory.None
         pokemonNode.physicsBody?.isDynamic = false
-        pokemonNode.alpha = 1
+        pokemonNode.alpha = 0
         pokemonNode.zPosition = 1
         
+        pokemonNode.isHidden = true
+
         // Add the Pokémon to the scene
         self.addChild(pokemonNode)
         
         print("Spawning Pokémon at position: \(pokemonNode.position)")
 
     }
+    
+   
+
+    private func displayCapturedPokemon(_ pokemonNode: SKSpriteNode) {
+        
+        let capturedPokemonDisplay = SKSpriteNode(texture: pokemonNode.texture)
+                
+        capturedPokemonDisplay.size = CGSize(width: 100, height: 100)
+        capturedPokemonDisplay.position = CGPoint(x: frame.midX, y: frame.midY)
+        capturedPokemonDisplay.zPosition = 10
+        addChild(capturedPokemonDisplay)
+
+        let nameLabel = SKLabelNode(fontNamed: "Arial")
+        nameLabel.name = pokemonNode.name
+        nameLabel.fontSize = 20
+        nameLabel.fontColor = SKColor.black
+        nameLabel.position = CGPoint(x: capturedPokemonDisplay.position.x, y: capturedPokemonDisplay.position.y - 50)
+        nameLabel.zPosition = 11
+        addChild(nameLabel)
+
+        let delayAction = SKAction.wait(forDuration: 2.0)
+        let removeAction = SKAction.removeFromParent()
+        capturedPokemonDisplay.run(SKAction.sequence([delayAction, removeAction]))
+        nameLabel.run(SKAction.sequence([delayAction, removeAction]))
+        }
+
+    
+    // Define a dictionary to map Pokémon numbers to their names
+
+
+
 
     
     func playBackgroundMusic(_ filename: String) {
@@ -152,18 +187,31 @@ class GameScene: SKScene {
             self.lastUpdateTime = currentTime
             // Spawn initial Pokémon
             spawnPokemonsIfNeeded()
-    }
+        }
         
         let dt = currentTime - self.lastUpdateTime
         
         for entity in self.entities {
             entity.update(deltaTime: dt)
-    }
+        }
         
         self.lastUpdateTime = currentTime
         
         // Check and spawn Pokémon if needed
         spawnPokemonsIfNeeded()
+        
+        for pokemon in self.children.filter({ $0.name == "pokemon" }) {
+            if let pokemonNode = pokemon as? SKSpriteNode, let playerNode = self.player {
+                let distance = hypot(pokemonNode.position.x - playerNode.position.x,
+                                     pokemonNode.position.y - playerNode.position.y)
+                
+                if distance < 100 {  // Set a threshold distance for visibility
+                    pokemonNode.alpha = 1  // Make Pokémon visible
+                } else {
+                    pokemonNode.alpha = 0  // Keep Pokémon invisible
+                }
+            }
+        }
     }
     
     private func spawnPokemonsIfNeeded() {
@@ -179,7 +227,7 @@ extension GameScene: SKPhysicsContactDelegate {
     func didBegin(_ contact: SKPhysicsContact) {
         var firstBody: SKPhysicsBody
         var secondBody: SKPhysicsBody
-
+        
         if contact.bodyA.categoryBitMask < contact.bodyB.categoryBitMask {
             firstBody = contact.bodyA
             secondBody = contact.bodyB
@@ -187,23 +235,28 @@ extension GameScene: SKPhysicsContactDelegate {
             firstBody = contact.bodyB
             secondBody = contact.bodyA
         }
-
+        
         if firstBody.categoryBitMask == PhysicsCategory.Player && secondBody.categoryBitMask == PhysicsCategory.Pokemon {
-                    if let pokemonNode = secondBody.node as? SKSpriteNode {
-                        pokemonNode.removeFromParent()
-                        playCaptureSound()
-                                            
-                        
+            if let pokemonNode = secondBody.node as? SKSpriteNode {
+                // Display the captured Pokémon and print its name
+                displayCapturedPokemon(pokemonNode)
+                print("Captured Pokémon: \(pokemonNode.name ?? "Unknown")")
+                displayCapturedPokemon(pokemonNode)
+                pokemonNode.removeFromParent() // Remove the captured Pokémon
+                playCaptureSound()
             }
         }
     }
+    
 }
+
 
 struct PhysicsCategory {
     static let None: UInt32 = 0
     static let Player: UInt32 = 0b1
     static let Pokemon: UInt32 = 0b10
 }
+
 
 
 

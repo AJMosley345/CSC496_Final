@@ -16,6 +16,7 @@
 		217526382B18F693007838D0 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 217526362B18F693007838D0 /* LaunchScreen.storyboard */; };
 		68977EA32B2CB0320038C77C /* capture_sound.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 68977EA22B2CB0320038C77C /* capture_sound.mp3 */; };
 		68977EA52B2CB0390038C77C /* background_music.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 68977EA42B2CB0390038C77C /* background_music.mp3 */; };
+		68977EA72B2CEC570038C77C /* Pokemon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68977EA62B2CEC570038C77C /* Pokemon.swift */; };
 		68B4A0C52B2B676C00244C19 /* Player.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68B4A0C42B2B676C00244C19 /* Player.swift */; };
 /* End PBXBuildFile section */
 
@@ -30,6 +31,7 @@
 		217526372B18F693007838D0 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		68977EA22B2CB0320038C77C /* capture_sound.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; name = capture_sound.mp3; path = ../../Downloads/capture_sound.mp3; sourceTree = "<group>"; };
 		68977EA42B2CB0390038C77C /* background_music.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; name = background_music.mp3; path = ../../Downloads/background_music.mp3; sourceTree = "<group>"; };
+		68977EA62B2CEC570038C77C /* Pokemon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Pokemon.swift; sourceTree = "<group>"; };
 		68B4A0C42B2B676C00244C19 /* Player.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Player.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -54,6 +56,7 @@
 				2175262D2B18F691007838D0 /* GameScene.swift */,
 				68B4A0C42B2B676C00244C19 /* Player.swift */,
 				2175262F2B18F691007838D0 /* GameViewController.swift */,
+				68977EA62B2CEC570038C77C /* Pokemon.swift */,
 				217526312B18F691007838D0 /* Main.storyboard */,
 				217526342B18F693007838D0 /* Assets.xcassets */,
 				217526362B18F693007838D0 /* LaunchScreen.storyboard */,
@@ -143,6 +146,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				68977EA72B2CEC570038C77C /* Pokemon.swift in Sources */,
 				68B4A0C52B2B676C00244C19 /* Player.swift in Sources */,
 				2175262E2B18F691007838D0 /* GameScene.swift in Sources */,
 				217526302B18F691007838D0 /* GameViewController.swift in Sources */,
