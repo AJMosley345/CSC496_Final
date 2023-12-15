@@ -84,6 +84,7 @@ class GameScene: SKScene {
         pokemonNode.physicsBody?.collisionBitMask = PhysicsCategory.None
         pokemonNode.physicsBody?.isDynamic = false
         pokemonNode.alpha = 1  // Ensure Pokémon is visible
+        pokemonNode.zPosition = 1
         
         // Add the Pokémon to the scene
         self.addChild(pokemonNode)
@@ -180,8 +181,8 @@ extension GameScene: SKPhysicsContactDelegate {
 
         if firstBody.categoryBitMask == PhysicsCategory.Player && secondBody.categoryBitMask == PhysicsCategory.Pokemon {
                     if let pokemonNode = secondBody.node as? SKSpriteNode {
-                        pokemonNode.removeFromParent() // Remove the captured Pokémon
                         playCaptureSound()
+                        pokemonNode.removeFromParent() // Remove the captured Pokémon
                         // Don't call spawnPokemons() here since update will handle it
                     }
                 }
